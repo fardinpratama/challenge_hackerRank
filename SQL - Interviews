@@ -1,0 +1,8 @@
+select cs.contest_id, cs.hacker_id, cs.name, sum(s.ts), sum(s.tas), sum(vs.tv), sum(vs.tuv) from contests cs 
+join colleges cl on cs.contest_id = cl.contest_id 
+join challenges ch on cl.college_id = ch.college_id
+full outer join (SELECT challenge_id, sum(total_views) tv, sum(total_unique_views) tuv from view_stats group by challenge_id) vs on ch.challenge_id=vs.challenge_id 
+full outer join (SELECT challenge_id, sum(total_submissions) ts, sum(total_accepted_submissions) tas from submission_stats group by challenge_id) s
+on ch.challenge_id=s.challenge_id
+group by  cs.contest_id, cs.hacker_id, cs.name 
+order by cs.contest_id
