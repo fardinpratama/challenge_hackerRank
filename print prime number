@@ -1,0 +1,27 @@
+/*
+Write a query to print all prime numbers less than or equal to 1000 . Print your result on a single line, and use the ampersand (&) character as your separator (instead of a space).
+*/
+declare @num1 int = 3;
+declare @num2 int = 2;
+declare @prime varchar(max)='2';
+declare @check int = 1
+
+while @num1 <= 1000
+begin
+    while @num2 < @num1
+    begin
+        if @num1 % @num2 = 0 
+            begin
+            set @check = 0
+            end
+        set @num2 = @num2+1
+    end
+    if @check = 1
+        begin
+        set @prime = @prime+'&'+cast(@num1 as varchar(10))
+        end
+    set @num1 = @num1+1;
+    set @num2 = 2;
+    set @check =1
+end;
+print(@prime)
