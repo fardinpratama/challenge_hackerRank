@@ -1,0 +1,29 @@
+-- weather analysis
+
+select CAST(MONTH(sumber.record_date) AS int), max(sumber.ma), min(sumber.mi), 
+case
+    when avg(sumber.av) = 49 then 49
+    else avg(sumber.av) +1
+end
+from 
+(
+select record_date, [max] ma,[min] mi , [avg] av from (select record_date, data_type, data_value from temperature_records) src
+pivot 
+(
+Min(data_value)for data_type in ([max],[min],[avg])
+) as pvt
+) sumber
+group by CAST(MONTH(sumber.record_date) AS int)
+
+-- weekend hour worked
+
+select src.emp_id,sum(floor(datediff(mi,  src. masuk, src.keluar)/60)) tot from
+(
+select emp_id,  substring(timestamp, 1, 10) tgl,  min(convert(datetime, timestamp, 120)) masuk, max(convert(datetime, timestamp, 120)) keluar
+from attendance
+group by emp_id, substring(timestamp, 1, 10)
+) src
+where DATENAME(dw, src.tgl) = 'saturday' 
+or DATENAME(dw, src.tgl) = 'sunday'
+group by emp_id
+order by tot
